@@ -30,6 +30,9 @@ public class FileSystemUtil {
         if (fileDirectory.getParent().toString().equalsIgnoreCase(File.separator)) {
             fileDirectory = Paths.get(System.getProperty("java.home"));
         }
+        if (fileDirectory.getFileName().toString().contains(".jar")) {
+            fileDirectory = fileDirectory.getParent();
+        }
         return fileDirectory;
     }
 

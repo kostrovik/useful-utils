@@ -56,18 +56,6 @@ compileJava {
     }
 }
 
-task addDependencies(type: Copy) {
-    from configurations.runtime
-    into "build/libs"
-}
-
-task copyToLib(type: Copy) {
-    from 'build/libs'
-    into "./modules/"
-
-    dependsOn addDependencies
-}
-
 task sourceJar(type: Jar) {
     from sourceSets.main.allJava
 }
