@@ -2,6 +2,7 @@ package com.github.kostrovik.useful.utils;
 
 import com.github.kostrovik.useful.interfaces.LoggerConfigInterface;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
@@ -47,5 +48,17 @@ public class InstanceLocatorUtil {
         LoggerConfigImpl loggerConfig = new LoggerConfigImpl();
 
         return loggerConfig.getLogger(className);
+    }
+
+    public Logger getLogger(String className, Class<?> specialLogger) {
+        Iterator<LoggerConfigInterface> instances = ServiceLoader.load(ModuleLayer.boot(), LoggerConfigInterface.class).iterator();
+        while (instances.hasNext()) {
+            LoggerConfigInterface instance = instances.next();
+            if (instance.getClass().isAssignableFrom(specialLogger)) {
+                return instance.getLogger(className);
+            }
+        }
+
+        return getLogger(className);
     }
 }

@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.kostrovik'
-version '1.0-SNAPSHOT'
+version '1.0'
 def moduleName = 'useful.utils'
 
 sourceCompatibility = 10
@@ -23,7 +23,6 @@ dependencies {
 }
 
 configurations.all {
-    // Check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
@@ -54,8 +53,4 @@ compileJava {
         ]
         classpath = files()
     }
-}
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
 }
