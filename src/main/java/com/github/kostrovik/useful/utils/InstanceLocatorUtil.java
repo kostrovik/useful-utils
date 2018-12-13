@@ -14,6 +14,12 @@ import java.util.logging.Logger;
  * github:  https://github.com/kostrovik/useful-utils
  */
 public class InstanceLocatorUtil {
+    /**
+     * Установлена как volatile потому что операция конструирования объекта не атомарна.
+     * В худшем случае может быть ситуация когда один поток начал конструировать. Второй уже прочитал что объект не
+     * null и начал с ним работать но объект еще не готов.
+     * В случае когда указано volatile второй поток прочтет уже гарантированно готовый объект.
+     */
     private static volatile InstanceLocatorUtil locator;
 
     private InstanceLocatorUtil() {
@@ -23,13 +29,9 @@ public class InstanceLocatorUtil {
         return getLocator();
     }
 
-    public static InstanceLocatorUtil getLocator() {
+    public static synchronized InstanceLocatorUtil getLocator() {
         if (locator == null) {
-            synchronized (InstanceLocatorUtil.class) {
-                if (locator == null) {
-                    locator = new InstanceLocatorUtil();
-                }
-            }
+            locator = new InstanceLocatorUtil();
         }
         return locator;
     }
@@ -50,6 +52,10 @@ public class InstanceLocatorUtil {
         return loggerConfig.getLogger(className);
     }
 
+    public Logger getLogger(Class clazz) {
+        return getLogger(clazz.getName());
+    }
+
     public Logger getLogger(String className, Class<?> specialLogger) {
         Iterator<LoggerConfigInterface> instances = ServiceLoader.load(ModuleLayer.boot(), LoggerConfigInterface.class).iterator();
         while (instances.hasNext()) {
@@ -60,5 +66,9 @@ public class InstanceLocatorUtil {
         }
 
         return getLogger(className);
+    }
+
+    public Logger getLogger(Class clazz, Class<?> specialLogger) {
+        return getLogger(clazz.getName(), specialLogger);
     }
 }

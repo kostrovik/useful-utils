@@ -10,4 +10,6 @@ import java.util.logging.Logger;
  */
 public interface LoggerConfigInterface {
     Logger getLogger(String className);
+
+    Logger getLogger(Class clazz);
 }

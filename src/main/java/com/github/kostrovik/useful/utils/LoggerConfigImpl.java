@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * github:  https://github.com/kostrovik/useful-utils
  */
 public class LoggerConfigImpl implements LoggerConfigInterface {
-    private static FileHandler fileHandler;
+    private static volatile FileHandler fileHandler;
 
     @Override
     public Logger getLogger(String className) {
@@ -37,11 +37,14 @@ public class LoggerConfigImpl implements LoggerConfigInterface {
         return logger;
     }
 
-    protected FileHandler getFileHandler() {
+    @Override
+    public Logger getLogger(Class clazz) {
+        return getLogger(clazz.getName());
+    }
+
+    protected synchronized FileHandler getFileHandler() {
         if (Objects.isNull(fileHandler)) {
-            if (Objects.isNull(fileHandler)) {
-                fileHandler = createLoggerFile("logs");
-            }
+            fileHandler = createLoggerFile("logs");
         }
         return fileHandler;
     }
@@ -53,6 +56,9 @@ public class LoggerConfigImpl implements LoggerConfigInterface {
             if (applicationDirectory.getParent().toString().equals(File.separator)) {
                 applicationDirectory = Paths.get(System.getProperty("java.home"));
             } else {
+                applicationDirectory = applicationDirectory.getParent();
+            }
+            if (applicationDirectory.getFileName().toString().contains(".jar")) {
                 applicationDirectory = applicationDirectory.getParent();
             }
 
@@ -67,8 +73,7 @@ public class LoggerConfigImpl implements LoggerConfigInterface {
 
             return handler;
         } catch (IOException e) {
-            // Тихо работаем дальше. Логировать все равно некуда, файл не возможно создать.
+            throw new RuntimeException(e);
         }
-        return null;
     }
 }
