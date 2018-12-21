@@ -33,7 +33,7 @@ public abstract class AbstractObservable implements Observable {
         listeners.remove(listener);
     }
 
-    protected void notifyLlisteners(Object source) {
+    protected void notifyListeners(Object source) {
         listeners.forEach(listener -> listener.handle(new EventObject(source)));
     }
 }
