@@ -7,8 +7,8 @@ group 'com.github.kostrovik'
 version '1.1.1'
 def moduleName = 'useful.utils'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 10
+targetCompatibility = 10
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
